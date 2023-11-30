@@ -13,6 +13,15 @@ export interface CheckersMsgCreateGameResponse {
   gameIndex?: string;
 }
 
+export interface CheckersMsgPlayMoveResponse {
+  /** @format int32 */
+  capturedX?: number;
+
+  /** @format int32 */
+  capturedY?: number;
+  winner?: string;
+}
+
 /**
  * Params defines the parameters for the module.
  */
@@ -31,6 +40,11 @@ export interface CheckersQueryAllStoredGameResponse {
    *  }
    */
   pagination?: V1Beta1PageResponse;
+}
+
+export interface CheckersQueryCanPlayMoveResponse {
+  possible?: boolean;
+  reason?: string;
 }
 
 export interface CheckersQueryGetStoredGameResponse {
@@ -55,11 +69,24 @@ export interface CheckersStoredGame {
   turn?: string;
   black?: string;
   red?: string;
+  winner?: string;
+  deadline?: string;
+
+  /** @format uint64 */
+  moveCount?: string;
+  beforeIndex?: string;
+  afterIndex?: string;
+
+  /** @format uint64 */
+  wager?: string;
+  denom?: string;
 }
 
 export interface CheckersSystemInfo {
   /** @format uint64 */
   nextId?: string;
+  fifoHeadIndex?: string;
+  fifoTailIndex?: string;
 }
 
 export interface ProtobufAny {
@@ -332,6 +359,30 @@ export class HttpClient<SecurityDataType = unknown> {
  * @version version not set
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryCanPlayMove
+   * @summary Queries a list of CanPlayMove items.
+   * @request GET:/satya/checkers/checkers/can_play_move/{gameIndex}/{player}/{fromX}/{fromY}/{toX}/{toY}
+   */
+  queryCanPlayMove = (
+    gameIndex: string,
+    player: string,
+    fromX: string,
+    fromY: string,
+    toX: string,
+    toY: string,
+    params: RequestParams = {},
+  ) =>
+    this.request<CheckersQueryCanPlayMoveResponse, RpcStatus>({
+      path: `/satya/checkers/checkers/can_play_move/${gameIndex}/${player}/${fromX}/${fromY}/${toX}/${toY}`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
   /**
    * No description
    *

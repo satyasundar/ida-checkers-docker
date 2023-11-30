@@ -4,8 +4,6 @@ import "github.com/satya/checkers/x/checkers/testutil"
 
 const (
 	alice = testutil.Alice
-	bob = testutil.Bob
+	bob   = testutil.Bob
 	carol = testutil.Carol
 )
-
-

@@ -23,11 +23,18 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type StoredGame struct {
-	Index string `protobuf:"bytes,1,opt,name=index,proto3" json:"index,omitempty"`
-	Board string `protobuf:"bytes,2,opt,name=board,proto3" json:"board,omitempty"`
-	Turn  string `protobuf:"bytes,3,opt,name=turn,proto3" json:"turn,omitempty"`
-	Black string `protobuf:"bytes,4,opt,name=black,proto3" json:"black,omitempty"`
-	Red   string `protobuf:"bytes,5,opt,name=red,proto3" json:"red,omitempty"`
+	Index       string `protobuf:"bytes,1,opt,name=index,proto3" json:"index,omitempty"`
+	Board       string `protobuf:"bytes,2,opt,name=board,proto3" json:"board,omitempty"`
+	Turn        string `protobuf:"bytes,3,opt,name=turn,proto3" json:"turn,omitempty"`
+	Black       string `protobuf:"bytes,4,opt,name=black,proto3" json:"black,omitempty"`
+	Red         string `protobuf:"bytes,5,opt,name=red,proto3" json:"red,omitempty"`
+	Winner      string `protobuf:"bytes,6,opt,name=winner,proto3" json:"winner,omitempty"`
+	Deadline    string `protobuf:"bytes,7,opt,name=deadline,proto3" json:"deadline,omitempty"`
+	MoveCount   uint64 `protobuf:"varint,8,opt,name=moveCount,proto3" json:"moveCount,omitempty"`
+	BeforeIndex string `protobuf:"bytes,9,opt,name=beforeIndex,proto3" json:"beforeIndex,omitempty"`
+	AfterIndex  string `protobuf:"bytes,10,opt,name=afterIndex,proto3" json:"afterIndex,omitempty"`
+	Wager       uint64 `protobuf:"varint,11,opt,name=wager,proto3" json:"wager,omitempty"`
+	Denom       string `protobuf:"bytes,12,opt,name=denom,proto3" json:"denom,omitempty"`
 }
 
 func (m *StoredGame) Reset()         { *m = StoredGame{} }
@@ -98,6 +105,55 @@ func (m *StoredGame) GetRed() string {
 	return ""
 }
 
+func (m *StoredGame) GetWinner() string {
+	if m != nil {
+		return m.Winner
+	}
+	return ""
+}
+
+func (m *StoredGame) GetDeadline() string {
+	if m != nil {
+		return m.Deadline
+	}
+	return ""
+}
+
+func (m *StoredGame) GetMoveCount() uint64 {
+	if m != nil {
+		return m.MoveCount
+	}
+	return 0
+}
+
+func (m *StoredGame) GetBeforeIndex() string {
+	if m != nil {
+		return m.BeforeIndex
+	}
+	return ""
+}
+
+func (m *StoredGame) GetAfterIndex() string {
+	if m != nil {
+		return m.AfterIndex
+	}
+	return ""
+}
+
+func (m *StoredGame) GetWager() uint64 {
+	if m != nil {
+		return m.Wager
+	}
+	return 0
+}
+
+func (m *StoredGame) GetDenom() string {
+	if m != nil {
+		return m.Denom
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterType((*StoredGame)(nil), "satya.checkers.checkers.StoredGame")
 }
@@ -105,20 +161,26 @@ func init() {
 func init() { proto.RegisterFile("checkers/stored_game.proto", fileDescriptor_8439c9c90688ff75) }
 
 var fileDescriptor_8439c9c90688ff75 = []byte{
-	// 202 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0x4a, 0xce, 0x48, 0x4d,
-	0xce, 0x4e, 0x2d, 0x2a, 0xd6, 0x2f, 0x2e, 0xc9, 0x2f, 0x4a, 0x4d, 0x89, 0x4f, 0x4f, 0xcc, 0x4d,
-	0xd5, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x12, 0x2f, 0x4e, 0x2c, 0xa9, 0x4c, 0xd4, 0x83, 0xa9,
-	0x80, 0x33, 0x94, 0x4a, 0xb8, 0xb8, 0x82, 0xc1, 0xaa, 0xdd, 0x13, 0x73, 0x53, 0x85, 0x44, 0xb8,
-	0x58, 0x33, 0xf3, 0x52, 0x52, 0x2b, 0x24, 0x18, 0x15, 0x18, 0x35, 0x38, 0x83, 0x20, 0x1c, 0x90,
-	0x68, 0x52, 0x7e, 0x62, 0x51, 0x8a, 0x04, 0x13, 0x44, 0x14, 0xcc, 0x11, 0x12, 0xe2, 0x62, 0x29,
-	0x29, 0x2d, 0xca, 0x93, 0x60, 0x06, 0x0b, 0x82, 0xd9, 0x60, 0x95, 0x39, 0x89, 0xc9, 0xd9, 0x12,
-	0x2c, 0x50, 0x95, 0x20, 0x8e, 0x90, 0x00, 0x17, 0x73, 0x51, 0x6a, 0x8a, 0x04, 0x2b, 0x58, 0x0c,
-	0xc4, 0x74, 0x72, 0x39, 0xf1, 0x48, 0x8e, 0xf1, 0xc2, 0x23, 0x39, 0xc6, 0x07, 0x8f, 0xe4, 0x18,
-	0x27, 0x3c, 0x96, 0x63, 0xb8, 0xf0, 0x58, 0x8e, 0xe1, 0xc6, 0x63, 0x39, 0x86, 0x28, 0xad, 0xf4,
-	0xcc, 0x92, 0x8c, 0xd2, 0x24, 0xbd, 0xe4, 0xfc, 0x5c, 0x7d, 0xb0, 0x9b, 0xf5, 0xe1, 0xbe, 0xaa,
-	0x40, 0x30, 0x4b, 0x2a, 0x0b, 0x52, 0x8b, 0x93, 0xd8, 0xc0, 0x7e, 0x33, 0x06, 0x04, 0x00, 0x00,
-	0xff, 0xff, 0x6f, 0x09, 0xd1, 0x64, 0xf9, 0x00, 0x00, 0x00,
+	// 303 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x4c, 0x91, 0x3f, 0x4e, 0xc3, 0x30,
+	0x14, 0xc6, 0xeb, 0xfe, 0xa3, 0x7d, 0x65, 0x40, 0x16, 0x02, 0xab, 0x42, 0x56, 0xc5, 0x54, 0x31,
+	0xb4, 0x03, 0x37, 0x00, 0x24, 0xc4, 0x5a, 0x36, 0x16, 0xe4, 0xc4, 0xaf, 0x69, 0xd4, 0xc6, 0xae,
+	0x1c, 0x87, 0xb6, 0xb7, 0xe0, 0x30, 0x1c, 0x82, 0xb1, 0x23, 0x23, 0x4a, 0x2e, 0x82, 0xf2, 0x52,
+	0xd2, 0x6e, 0xdf, 0xef, 0x97, 0x2f, 0xd6, 0xb3, 0x1f, 0x0c, 0xc3, 0x05, 0x86, 0x4b, 0x74, 0xe9,
+	0x34, 0xf5, 0xd6, 0xa1, 0x7e, 0x8f, 0x54, 0x82, 0x93, 0xb5, 0xb3, 0xde, 0xf2, 0xeb, 0x54, 0xf9,
+	0x9d, 0x9a, 0xfc, 0x37, 0xea, 0x70, 0xfb, 0xd5, 0x04, 0x78, 0xa5, 0xfa, 0xb3, 0x4a, 0x90, 0x5f,
+	0x42, 0x27, 0x36, 0x1a, 0xb7, 0x82, 0x8d, 0xd8, 0xb8, 0x3f, 0xab, 0xa0, 0xb4, 0x81, 0x55, 0x4e,
+	0x8b, 0x66, 0x65, 0x09, 0x38, 0x87, 0xb6, 0xcf, 0x9c, 0x11, 0x2d, 0x92, 0x94, 0xa9, 0xb9, 0x52,
+	0xe1, 0x52, 0xb4, 0x0f, 0xcd, 0x12, 0xf8, 0x05, 0xb4, 0x1c, 0x6a, 0xd1, 0x21, 0x57, 0x46, 0x7e,
+	0x05, 0xdd, 0x4d, 0x6c, 0x0c, 0x3a, 0xd1, 0x25, 0x79, 0x20, 0x3e, 0x84, 0x9e, 0x46, 0xa5, 0x57,
+	0xb1, 0x41, 0x71, 0x46, 0x5f, 0x6a, 0xe6, 0x37, 0xd0, 0x4f, 0xec, 0x07, 0x3e, 0xda, 0xcc, 0x78,
+	0xd1, 0x1b, 0xb1, 0x71, 0x7b, 0x76, 0x14, 0x7c, 0x04, 0x83, 0x00, 0xe7, 0xd6, 0xe1, 0x0b, 0xcd,
+	0xdf, 0xa7, 0x9f, 0x4f, 0x15, 0x97, 0x00, 0x6a, 0xee, 0xd1, 0x55, 0x05, 0xa0, 0xc2, 0x89, 0x29,
+	0x67, 0xdf, 0xa8, 0x08, 0x9d, 0x18, 0xd0, 0xd9, 0x15, 0x94, 0x56, 0xa3, 0xb1, 0x89, 0x38, 0xaf,
+	0x6e, 0x44, 0xf0, 0xf0, 0xf4, 0x9d, 0x4b, 0xb6, 0xcf, 0x25, 0xfb, 0xcd, 0x25, 0xfb, 0x2c, 0x64,
+	0x63, 0x5f, 0xc8, 0xc6, 0x4f, 0x21, 0x1b, 0x6f, 0x77, 0x51, 0xec, 0x17, 0x59, 0x30, 0x09, 0x6d,
+	0x32, 0xa5, 0x47, 0x9f, 0xd6, 0x6b, 0xd9, 0x1e, 0xa3, 0xdf, 0xad, 0x31, 0x0d, 0xba, 0xb4, 0x9c,
+	0xfb, 0xbf, 0x00, 0x00, 0x00, 0xff, 0xff, 0x8e, 0x02, 0x63, 0xa4, 0xba, 0x01, 0x00, 0x00,
 }
 
 func (m *StoredGame) Marshal() (dAtA []byte, err error) {
@@ -141,6 +203,51 @@ func (m *StoredGame) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintStoredGame(dAtA, i, uint64(len(m.Denom)))
+		i--
+		dAtA[i] = 0x62
+	}
+	if m.Wager != 0 {
+		i = encodeVarintStoredGame(dAtA, i, uint64(m.Wager))
+		i--
+		dAtA[i] = 0x58
+	}
+	if len(m.AfterIndex) > 0 {
+		i -= len(m.AfterIndex)
+		copy(dAtA[i:], m.AfterIndex)
+		i = encodeVarintStoredGame(dAtA, i, uint64(len(m.AfterIndex)))
+		i--
+		dAtA[i] = 0x52
+	}
+	if len(m.BeforeIndex) > 0 {
+		i -= len(m.BeforeIndex)
+		copy(dAtA[i:], m.BeforeIndex)
+		i = encodeVarintStoredGame(dAtA, i, uint64(len(m.BeforeIndex)))
+		i--
+		dAtA[i] = 0x4a
+	}
+	if m.MoveCount != 0 {
+		i = encodeVarintStoredGame(dAtA, i, uint64(m.MoveCount))
+		i--
+		dAtA[i] = 0x40
+	}
+	if len(m.Deadline) > 0 {
+		i -= len(m.Deadline)
+		copy(dAtA[i:], m.Deadline)
+		i = encodeVarintStoredGame(dAtA, i, uint64(len(m.Deadline)))
+		i--
+		dAtA[i] = 0x3a
+	}
+	if len(m.Winner) > 0 {
+		i -= len(m.Winner)
+		copy(dAtA[i:], m.Winner)
+		i = encodeVarintStoredGame(dAtA, i, uint64(len(m.Winner)))
+		i--
+		dAtA[i] = 0x32
+	}
 	if len(m.Red) > 0 {
 		i -= len(m.Red)
 		copy(dAtA[i:], m.Red)
@@ -213,6 +320,32 @@ func (m *StoredGame) Size() (n int) {
 		n += 1 + l + sovStoredGame(uint64(l))
 	}
 	l = len(m.Red)
+	if l > 0 {
+		n += 1 + l + sovStoredGame(uint64(l))
+	}
+	l = len(m.Winner)
+	if l > 0 {
+		n += 1 + l + sovStoredGame(uint64(l))
+	}
+	l = len(m.Deadline)
+	if l > 0 {
+		n += 1 + l + sovStoredGame(uint64(l))
+	}
+	if m.MoveCount != 0 {
+		n += 1 + sovStoredGame(uint64(m.MoveCount))
+	}
+	l = len(m.BeforeIndex)
+	if l > 0 {
+		n += 1 + l + sovStoredGame(uint64(l))
+	}
+	l = len(m.AfterIndex)
+	if l > 0 {
+		n += 1 + l + sovStoredGame(uint64(l))
+	}
+	if m.Wager != 0 {
+		n += 1 + sovStoredGame(uint64(m.Wager))
+	}
+	l = len(m.Denom)
 	if l > 0 {
 		n += 1 + l + sovStoredGame(uint64(l))
 	}
@@ -413,6 +546,204 @@ func (m *StoredGame) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.Red = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Winner", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowStoredGame
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthStoredGame
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthStoredGame
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Winner = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Deadline", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowStoredGame
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthStoredGame
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthStoredGame
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Deadline = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 8:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MoveCount", wireType)
+			}
+			m.MoveCount = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowStoredGame
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.MoveCount |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 9:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BeforeIndex", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowStoredGame
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthStoredGame
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthStoredGame
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.BeforeIndex = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 10:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AfterIndex", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowStoredGame
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthStoredGame
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthStoredGame
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AfterIndex = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 11:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Wager", wireType)
+			}
+			m.Wager = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowStoredGame
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Wager |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 12:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowStoredGame
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthStoredGame
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthStoredGame
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denom = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

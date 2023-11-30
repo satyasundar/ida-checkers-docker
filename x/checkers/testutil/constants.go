@@ -5,6 +5,3 @@ const (
 	Bob   = "cosmos10rsrdjqap9ynuhy5y05mzxffkh52gaqnsz7yx0"
 	Carol = "cosmos1e0w5t53nrq7p66fye6c8p0ynyhf6y24l4yuxd7"
 )
-
-
-

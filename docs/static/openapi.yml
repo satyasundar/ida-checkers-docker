@@ -28832,6 +28832,69 @@ paths:
           format: uint64
       tags:
         - Query
+  '/satya/checkers/checkers/can_play_move/{gameIndex}/{player}/{fromX}/{fromY}/{toX}/{toY}':
+    get:
+      summary: Queries a list of CanPlayMove items.
+      operationId: SatyaCheckersCheckersCanPlayMove
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              possible:
+                type: boolean
+              reason:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: gameIndex
+          in: path
+          required: true
+          type: string
+        - name: player
+          in: path
+          required: true
+          type: string
+        - name: fromX
+          in: path
+          required: true
+          type: string
+          format: uint64
+        - name: fromY
+          in: path
+          required: true
+          type: string
+          format: uint64
+        - name: toX
+          in: path
+          required: true
+          type: string
+          format: uint64
+        - name: toY
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
   /satya/checkers/checkers/params:
     get:
       summary: Parameters queries the parameters of the module.
@@ -28892,6 +28955,22 @@ paths:
                     black:
                       type: string
                     red:
+                      type: string
+                    winner:
+                      type: string
+                    deadline:
+                      type: string
+                    moveCount:
+                      type: string
+                      format: uint64
+                    beforeIndex:
+                      type: string
+                    afterIndex:
+                      type: string
+                    wager:
+                      type: string
+                      format: uint64
+                    denom:
                       type: string
               pagination:
                 type: object
@@ -29020,6 +29099,22 @@ paths:
                     type: string
                   red:
                     type: string
+                  winner:
+                    type: string
+                  deadline:
+                    type: string
+                  moveCount:
+                    type: string
+                    format: uint64
+                  beforeIndex:
+                    type: string
+                  afterIndex:
+                    type: string
+                  wager:
+                    type: string
+                    format: uint64
+                  denom:
+                    type: string
         default:
           description: An unexpected error response.
           schema:
@@ -29061,6 +29156,10 @@ paths:
                   nextId:
                     type: string
                     format: uint64
+                  fifoHeadIndex:
+                    type: string
+                  fifoTailIndex:
+                    type: string
         default:
           description: An unexpected error response.
           schema:
@@ -49322,6 +49421,17 @@ definitions:
     properties:
       gameIndex:
         type: string
+  satya.checkers.checkers.MsgPlayMoveResponse:
+    type: object
+    properties:
+      capturedX:
+        type: integer
+        format: int32
+      capturedY:
+        type: integer
+        format: int32
+      winner:
+        type: string
   satya.checkers.checkers.Params:
     type: object
     description: Params defines the parameters for the module.
@@ -49342,6 +49452,22 @@ definitions:
             black:
               type: string
             red:
+              type: string
+            winner:
+              type: string
+            deadline:
+              type: string
+            moveCount:
+              type: string
+              format: uint64
+            beforeIndex:
+              type: string
+            afterIndex:
+              type: string
+            wager:
+              type: string
+              format: uint64
+            denom:
               type: string
       pagination:
         type: object
@@ -49368,6 +49494,13 @@ definitions:
                    repeated Bar results = 1;
                    PageResponse page = 2;
            }
+  satya.checkers.checkers.QueryCanPlayMoveResponse:
+    type: object
+    properties:
+      possible:
+        type: boolean
+      reason:
+        type: string
   satya.checkers.checkers.QueryGetStoredGameResponse:
     type: object
     properties:
@@ -49384,6 +49517,22 @@ definitions:
             type: string
           red:
             type: string
+          winner:
+            type: string
+          deadline:
+            type: string
+          moveCount:
+            type: string
+            format: uint64
+          beforeIndex:
+            type: string
+          afterIndex:
+            type: string
+          wager:
+            type: string
+            format: uint64
+          denom:
+            type: string
   satya.checkers.checkers.QueryGetSystemInfoResponse:
     type: object
     properties:
@@ -49393,6 +49542,10 @@ definitions:
           nextId:
             type: string
             format: uint64
+          fifoHeadIndex:
+            type: string
+          fifoTailIndex:
+            type: string
   satya.checkers.checkers.QueryParamsResponse:
     type: object
     properties:
@@ -49413,12 +49566,32 @@ definitions:
         type: string
       red:
         type: string
+      winner:
+        type: string
+      deadline:
+        type: string
+      moveCount:
+        type: string
+        format: uint64
+      beforeIndex:
+        type: string
+      afterIndex:
+        type: string
+      wager:
+        type: string
+        format: uint64
+      denom:
+        type: string
   satya.checkers.checkers.SystemInfo:
     type: object
     properties:
       nextId:
         type: string
         format: uint64
+      fifoHeadIndex:
+        type: string
+      fifoTailIndex:
+        type: string
   tendermint.spn.claim.ClaimRecord:
     type: object
     properties:
