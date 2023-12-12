@@ -9,10 +9,9 @@ import (
 )
 
 func TestPlayMove2Games1MoveHasSavedFifo(t *testing.T) {
-	msgSrvr, keeper, context, ctrl, escrow := setupMsgServerWithOneGameForPlayMove(t)
+	msgSrvr, keeper, context := setupMsgServerWithOneGameForPlayMove(t)
 	ctx := sdk.UnwrapSDKContext(context)
-	defer ctrl.Finish()
-	escrow.ExpectAny(context)
+	
 	msgSrvr.CreateGame(context, &types.MsgCreateGame{
 		Creator: bob,
 		Black:   carol,
@@ -68,10 +67,9 @@ func TestPlayMove2Games1MoveHasSavedFifo(t *testing.T) {
 }
 
 func TestPlayMove2Games2MoveHasSavedFifo(t *testing.T) {
-	msgSrvr, keeper, context, ctrl, escrow := setupMsgServerWithOneGameForPlayMove(t)
+	msgSrvr, keeper, context := setupMsgServerWithOneGameForPlayMove(t)
 	ctx := sdk.UnwrapSDKContext(context)
-	defer ctrl.Finish()
-	escrow.ExpectAny(context)
+
 	msgSrvr.CreateGame(context, &types.MsgCreateGame{
 		Creator: bob,
 		Black:   carol,

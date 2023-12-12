@@ -14,7 +14,13 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func setupMsgServerWithOneGameForPlayMove(t testing.TB) (types.MsgServer, keeper.Keeper, context.Context,
+func setupMsgServerWithOneGameForPlayMove(t testing.TB) (types.MsgServer, keeper.Keeper, context.Context){
+	server, k , context, _, escrow := setupMsgServerWithOneGameForPlayMoveWithMock(t)
+	escrow.ExpectAny(context)
+	return server, k, context
+}
+
+func setupMsgServerWithOneGameForPlayMoveWithMock(t testing.TB) (types.MsgServer, keeper.Keeper, context.Context,
 	*gomock.Controller, *testutil.MockBankEscrowKeeper) {
 	//k, ctx := keepertest.CheckersKeeper(t)
 	ctrl := gomock.NewController(t)
@@ -29,14 +35,13 @@ func setupMsgServerWithOneGameForPlayMove(t testing.TB) (types.MsgServer, keeper
 		Creator: alice,
 		Black:   bob,
 		Red:     carol,
+		Wager:   45,
 	})
 	return server, *k, context, ctrl, bankMock
 }
 
 func TestPlayMove(t *testing.T) {
-	msgServer, _, context, ctrl, escrow := setupMsgServerWithOneGameForPlayMove(t)
-	defer ctrl.Finish()
-	escrow.ExpectAny(context)
+	msgServer, _, context := setupMsgServerWithOneGameForPlayMove(t)
 	playMoveResponse, err := msgServer.PlayMove(context, &types.MsgPlayMove{
 		Creator:   bob,
 		GameIndex: "1",
@@ -54,8 +59,8 @@ func TestPlayMove(t *testing.T) {
 }
 
 func TestPlayMoveGameNotFound(t *testing.T) {
-	msgServer, _, context, ctrl, _ := setupMsgServerWithOneGameForPlayMove(t)
-	defer ctrl.Finish()
+	msgServer, _, context := setupMsgServerWithOneGameForPlayMove(t)
+	
 	playMoveResponse, err := msgServer.PlayMove(context, &types.MsgPlayMove{
 		Creator:   bob,
 		GameIndex: "2",
@@ -93,10 +98,9 @@ func TestPlayMoveSameBlackRed(t *testing.T) {
 }
 
 func TestPlayMoveSaveGame(t *testing.T) {
-	msgServer, keeper, context, ctrl, escrow := setupMsgServerWithOneGameForPlayMove(t)
+	msgServer, keeper, context := setupMsgServerWithOneGameForPlayMove(t)
 	ctx := sdk.UnwrapSDKContext(context)
-	defer ctrl.Finish()
-	escrow.ExpectAny(context)
+	
 	msgServer.PlayMove(context, &types.MsgPlayMove{
 		Creator:   bob,
 		GameIndex: "1",
@@ -126,15 +130,15 @@ func TestPlayMoveSaveGame(t *testing.T) {
 		MoveCount:   1,
 		BeforeIndex: "-1",
 		AfterIndex:  "-1",
+		Wager:		 45,
 	}, game1)
 }
 
 ////////////////// Some other unit tests to be written
 
 func TestPlayMoveCannotParseGame(t *testing.T) {
-	msgServer, k, context, ctrl, _ := setupMsgServerWithOneGameForPlayMove(t)
+	msgServer, k, context := setupMsgServerWithOneGameForPlayMove(t)
 	ctx := sdk.UnwrapSDKContext(context)
-	defer ctrl.Finish()
 
 	storedGame, _ := k.GetStoredGame(ctx, "1")
 	storedGame.Board = "not a board"
@@ -156,10 +160,9 @@ func TestPlayMoveCannotParseGame(t *testing.T) {
 }
 
 func TestPlayMove2Emitted(t *testing.T) {
-	msgServer, _, context, ctrl, escrow := setupMsgServerWithOneGameForPlayMove(t)
+	msgServer, _, context := setupMsgServerWithOneGameForPlayMove(t)
 	ctx := sdk.UnwrapSDKContext(context)
-	defer ctrl.Finish()
-	escrow.ExpectAny(context)
+	
 	msgServer.PlayMove(context, &types.MsgPlayMove{
 		Creator:   bob,
 		GameIndex: "1",
@@ -193,10 +196,9 @@ func TestPlayMove2Emitted(t *testing.T) {
 }
 
 func TestPlayMoveEmitted(t *testing.T) {
-	msgServer, _, context, ctrl, escrow := setupMsgServerWithOneGameForPlayMove(t)
+	msgServer, _, context := setupMsgServerWithOneGameForPlayMove(t)
 	ctx := sdk.UnwrapSDKContext(context)
-	defer ctrl.Finish()
-	escrow.ExpectAny(context)
+	
 	msgServer.PlayMove(context, &types.MsgPlayMove{
 		Creator:   bob,
 		GameIndex: "1",
@@ -226,10 +228,9 @@ func TestPlayMoveEmitted(t *testing.T) {
 //more tests to be written
 
 func TestSavedPlayedDeadlineIsParseable(t *testing.T) {
-	msgSrvr, keeper, context, ctrl, escrow := setupMsgServerWithOneGameForPlayMove(t)
+	msgSrvr, keeper, context := setupMsgServerWithOneGameForPlayMove(t)
 	ctx := sdk.UnwrapSDKContext(context)
-	defer ctrl.Finish()
-	escrow.ExpectAny(context)
+
 	msgSrvr.PlayMove(context, &types.MsgPlayMove{
 		Creator:   bob,
 		GameIndex: "1",
@@ -242,4 +243,18 @@ func TestSavedPlayedDeadlineIsParseable(t *testing.T) {
 	require.True(t, found)
 	_, err := game.GetDeadlineAsTime()
 	require.Nil(t, err)
+}
+
+func TestPlayMoveCalledBank(t *testing.T) {
+	msgServer, _, context, ctrl, escrow := setupMsgServerWithOneGameForPlayMoveWithMock(t)
+	defer ctrl.Finish()
+	escrow.ExpectPay(context, bob, 45).Times(1)
+	msgServer.PlayMove(context, &types.MsgPlayMove{
+		Creator:   bob,
+		GameIndex: "1",
+		FromX:     1,
+		FromY:     2,
+		ToX:       2,
+		ToY:       3,
+	})
 }
