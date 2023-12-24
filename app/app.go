@@ -264,8 +264,7 @@ func New(
 		invCheckPeriod,
 		encodingConfig,
 		appOpts,
-		baseAppOptions...,
-	)
+		baseAppOptions...)
 }
 
 func NewApp(
