@@ -78,9 +78,10 @@ func (k msgServer) PlayMove(goCtx context.Context, msg *types.MsgPlayMove) (*typ
 		storedGame.Board = lastBoard
 		k.Keeper.SendToFifoTail(ctx, &storedGame, &systemInfo)
 	} else {
-		storedGame.Board = ""
 		k.Keeper.RemoveFromFifo(ctx, &storedGame, &systemInfo)
+		storedGame.Board = ""
 		k.Keeper.MustPayWinnings(ctx, &storedGame)
+		k.Keeper.MustRegisterPlayerWin(ctx, &storedGame)
 	}
 
 	storedGame.Deadline = types.FormatDeadline(types.GetNextDeadline((ctx)))

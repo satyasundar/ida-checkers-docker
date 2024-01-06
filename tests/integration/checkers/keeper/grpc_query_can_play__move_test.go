@@ -7,7 +7,7 @@ import (
 
 var canPlayOkResponse = &types.QueryCanPlayMoveResponse{
 	Possible: true,
-	Reason: "ok",
+	Reason:   "ok",
 }
 
 func (suite *IntegrationTestSuite) TestCanPlayAfterCreate() {
@@ -15,11 +15,11 @@ func (suite *IntegrationTestSuite) TestCanPlayAfterCreate() {
 	goCtx := sdk.WrapSDKContext(suite.ctx)
 	resonse, err := suite.queryClient.CanPlayMove(goCtx, &types.QueryCanPlayMoveRequest{
 		GameIndex: "1",
-		Player: "b",
-		FromX: 1,
-		FromY: 2,
-		ToX: 2,
-		ToY: 3,
+		Player:    "b",
+		FromX:     1,
+		FromY:     2,
+		ToX:       2,
+		ToY:       3,
 	})
 	suite.Require().Nil(err)
 	suite.Require().EqualValues(canPlayOkResponse, resonse)

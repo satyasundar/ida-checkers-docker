@@ -11,7 +11,7 @@ import (
 func TestPlayMove2Games1MoveHasSavedFifo(t *testing.T) {
 	msgSrvr, keeper, context := setupMsgServerWithOneGameForPlayMove(t)
 	ctx := sdk.UnwrapSDKContext(context)
-	
+
 	msgSrvr.CreateGame(context, &types.MsgCreateGame{
 		Creator: bob,
 		Black:   carol,

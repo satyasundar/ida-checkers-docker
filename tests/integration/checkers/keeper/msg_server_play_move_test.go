@@ -14,7 +14,7 @@ func (suite *IntegrationTestSuite) setupSuiteWithOneGameForPlayMove() {
 		Black:   bob,
 		Red:     carol,
 		Wager:   45,
-		Denom: "stake",
+		Denom:   "stake",
 	})
 }
 
@@ -51,7 +51,7 @@ func (suite *IntegrationTestSuite) TestPlayMoveSavedGame() {
 		Deadline:    types.FormatDeadline(suite.ctx.BlockTime().Add(types.MaxTurnDuration)),
 		Winner:      "*",
 		Wager:       45,
-		Denom: 		"stake",
+		Denom:       "stake",
 	}, game1)
 }
 
@@ -84,7 +84,7 @@ func (suite *IntegrationTestSuite) TestPlayMovePlayerPaidEvenZero() {
 		Black:   carol,
 		Red:     alice,
 		Wager:   0,
-		Denom: 	 "stake",	
+		Denom:   "stake",
 	})
 	suite.RequireBankBalance(balAlice, alice)
 	suite.RequireBankBalance(balBob, bob)

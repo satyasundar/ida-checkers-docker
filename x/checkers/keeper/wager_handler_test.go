@@ -20,7 +20,8 @@ func setupKeeperForWagerHandler(t testing.TB) (keeper.Keeper, context.Context,
 	*gomock.Controller, *testutil.MockBankEscrowKeeper) {
 	ctrl := gomock.NewController(t)
 	bankMock := testutil.NewMockBankEscrowKeeper(ctrl)
-	k, ctx := keepertest.CheckersKeeperWithMocks(t, bankMock)
+	leaderboardMock := testutil.NewMockCheckersLeaderboardKeeper(ctrl)
+	k, ctx := keepertest.CheckersKeeperWithMocks(t, bankMock, leaderboardMock)
 	checkers.InitGenesis(ctx, *k, *types.DefaultGenesis())
 	context := sdk.WrapSDKContext(ctx)
 	return *k, context, ctrl, bankMock
@@ -52,6 +53,7 @@ func TestWagerHandlerCollectFailedNoMove(t *testing.T) {
 		Black:     alice,
 		MoveCount: 0,
 		Wager:     45,
+		Denom:     "stake",
 	})
 
 	require.NotNil(t, err)
@@ -67,6 +69,7 @@ func TestWagerHandlerCollectNoMove(t *testing.T) {
 		Black:     alice,
 		MoveCount: 0,
 		Wager:     45,
+		Denom:     "stake",
 	})
 	require.Nil(t, err)
 }
@@ -88,6 +91,7 @@ func TestWagerHandlerPayWrongEscrowFailed(t *testing.T) {
 		Winner:    "b",
 		MoveCount: 1,
 		Wager:     45,
+		Denom:     "stake",
 	})
 }
 
@@ -102,6 +106,7 @@ func TestWagerHandlerPayEscrowCalledTwoMoves(t *testing.T) {
 		Winner:    "b",
 		MoveCount: 2,
 		Wager:     45,
+		Denom:     "stake",
 	})
 }
 
@@ -116,5 +121,6 @@ func TestWagerHandlerRefundCalled(t *testing.T) {
 		Black:     alice,
 		MoveCount: 1,
 		Wager:     45,
+		Denom:     "stake",
 	})
 }

@@ -21,13 +21,13 @@ func (k Keeper) CanPlayMove(goCtx context.Context, req *types.QueryCanPlayMoveRe
 
 	storedGame, found := k.GetStoredGame(ctx, req.GameIndex)
 	if !found {
-		return nil, sdkerrors.Wrapf(types.ErrGameNotFound,"%s", req.GameIndex)
+		return nil, sdkerrors.Wrapf(types.ErrGameNotFound, "%s", req.GameIndex)
 	}
 
 	if storedGame.Winner != rules.PieceStrings[rules.NO_PLAYER] {
 		return &types.QueryCanPlayMoveResponse{
 			Possible: false,
-			Reason: types.ErrGameFinished.Error(),
+			Reason:   types.ErrGameFinished.Error(),
 		}, nil
 	}
 
@@ -43,7 +43,7 @@ func (k Keeper) CanPlayMove(goCtx context.Context, req *types.QueryCanPlayMoveRe
 	} else {
 		return &types.QueryCanPlayMoveResponse{
 			Possible: false,
-			Reason: fmt.Sprintf("%s: %s", types.ErrCreatorNotPlayer.Error(), req.Player),
+			Reason:   fmt.Sprintf("%s: %s", types.ErrCreatorNotPlayer.Error(), req.Player),
 		}, nil
 	}
 
@@ -54,7 +54,7 @@ func (k Keeper) CanPlayMove(goCtx context.Context, req *types.QueryCanPlayMoveRe
 	if !game.TurnIs(player) {
 		return &types.QueryCanPlayMoveResponse{
 			Possible: false,
-			Reason:  fmt.Sprintf("%s: %s", types.ErrNotPlayerTurn.Error(), player.Color),
+			Reason:   fmt.Sprintf("%s: %s", types.ErrNotPlayerTurn.Error(), player.Color),
 		}, nil
 	}
 
@@ -72,12 +72,12 @@ func (k Keeper) CanPlayMove(goCtx context.Context, req *types.QueryCanPlayMoveRe
 	if moveErr != nil {
 		return &types.QueryCanPlayMoveResponse{
 			Possible: false,
-			Reason: fmt.Sprintf("%s: %s", types.ErrWrongMove.Error(), moveErr.Error()),
+			Reason:   fmt.Sprintf("%s: %s", types.ErrWrongMove.Error(), moveErr.Error()),
 		}, nil
 	}
 
 	return &types.QueryCanPlayMoveResponse{
 		Possible: true,
-		Reason: "ok",
+		Reason:   "ok",
 	}, nil
 }

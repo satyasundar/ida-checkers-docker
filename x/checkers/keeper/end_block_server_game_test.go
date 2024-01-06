@@ -12,7 +12,7 @@ import (
 func TestForfeitUnplayed(t *testing.T) {
 	_, keeper, context := setupMsgServerWithOneGameForPlayMove(t)
 	ctx := sdk.UnwrapSDKContext(context)
-	
+
 	game1, found := keeper.GetStoredGame(ctx, "1")
 	require.True(t, found)
 	game1.Deadline = types.FormatDeadline(ctx.BlockTime().Add(time.Duration(-1)))
@@ -45,7 +45,7 @@ func TestForfeitUnplayed(t *testing.T) {
 func TestForfeitPlayedOnce(t *testing.T) {
 	msgServer, keeper, context := setupMsgServerWithOneGameForPlayMove(t)
 	ctx := sdk.UnwrapSDKContext(context)
-	
+
 	msgServer.PlayMove(context, &types.MsgPlayMove{
 		Creator:   bob,
 		GameIndex: "1",
@@ -84,9 +84,14 @@ func TestForfeitPlayedOnce(t *testing.T) {
 }
 
 func TestForfeitPlayedTwice(t *testing.T) {
-	msgServer, keeper, context := setupMsgServerWithOneGameForPlayMove(t)
+	msgServer, keeper, context, ctrl, escrow, board := setupMsgServerWithOneGameForPlayMoveWithMock(t)
 	ctx := sdk.UnwrapSDKContext(context)
-	
+	defer ctrl.Finish()
+	payBob := escrow.ExpectPay(context, bob, 45).Times(1)
+	payCarol := escrow.ExpectPay(context, carol, 45).Times(1).After(payBob)
+	escrow.ExpectRefund(context, carol, 90).Times(1).After(payCarol)
+	board.Expectwin(context, carol).Times(1)
+	board.ExpectForfeit(context, bob).Times(1)
 	msgServer.PlayMove(context, &types.MsgPlayMove{
 		Creator:   bob,
 		GameIndex: "1",
@@ -95,7 +100,6 @@ func TestForfeitPlayedTwice(t *testing.T) {
 		ToX:       2,
 		ToY:       3,
 	})
-
 	msgServer.PlayMove(context, &types.MsgPlayMove{
 		Creator:   carol,
 		GameIndex: "1",
@@ -104,7 +108,6 @@ func TestForfeitPlayedTwice(t *testing.T) {
 		ToX:       1,
 		ToY:       4,
 	})
-
 	game1, found := keeper.GetStoredGame(ctx, "1")
 	require.True(t, found)
 	oldDeadline := types.FormatDeadline(ctx.BlockTime().Add(time.Duration(-1)))
@@ -120,12 +123,13 @@ func TestForfeitPlayedTwice(t *testing.T) {
 		Turn:        "b",
 		Black:       bob,
 		Red:         carol,
-		Winner:      "r",
-		Deadline:    oldDeadline,
 		MoveCount:   uint64(2),
 		BeforeIndex: "-1",
 		AfterIndex:  "-1",
-		Wager:		45,
+		Deadline:    oldDeadline,
+		Winner:      "r",
+		Wager:       45,
+		Denom:       "stake",
 	}, game1)
 
 	systemInfo, found := keeper.GetSystemInfo(ctx)
@@ -135,7 +139,6 @@ func TestForfeitPlayedTwice(t *testing.T) {
 		FifoHeadIndex: "-1",
 		FifoTailIndex: "-1",
 	}, systemInfo)
-
 	events := sdk.StringifyEvents(ctx.EventManager().ABCIEvents())
 	require.Len(t, events, 3)
 	event := events[0]
@@ -147,14 +150,12 @@ func TestForfeitPlayedTwice(t *testing.T) {
 			{Key: "board", Value: "*b*b*b*b|b*b*b*b*|***b*b*b|**b*****|*r******|**r*r*r*|*r*r*r*r|r*r*r*r*"},
 		},
 	}, event)
-
 }
-
 
 func TestForfeit2OldestPlayedOnceIn1Call(t *testing.T) {
 	msgServer, keeper, context := setupMsgServerWithOneGameForPlayMove(t)
 	ctx := sdk.UnwrapSDKContext(context)
-	
+
 	msgServer.PlayMove(context, &types.MsgPlayMove{
 		Creator:   bob,
 		GameIndex: "1",

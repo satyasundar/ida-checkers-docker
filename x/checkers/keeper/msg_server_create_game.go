@@ -31,7 +31,7 @@ func (k msgServer) CreateGame(goCtx context.Context, msg *types.MsgCreateGame) (
 		BeforeIndex: types.NoFifoIndex,
 		AfterIndex:  types.NoFifoIndex,
 		Wager:       msg.Wager,
-		Denom:       msg.Denom,	
+		Denom:       msg.Denom,
 	}
 
 	err := storedGame.Validate()

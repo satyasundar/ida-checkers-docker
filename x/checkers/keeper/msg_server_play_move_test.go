@@ -14,18 +14,19 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func setupMsgServerWithOneGameForPlayMove(t testing.TB) (types.MsgServer, keeper.Keeper, context.Context){
-	server, k , context, _, escrow := setupMsgServerWithOneGameForPlayMoveWithMock(t)
+func setupMsgServerWithOneGameForPlayMove(t testing.TB) (types.MsgServer, keeper.Keeper, context.Context) {
+	server, k, context, _, escrow, _ := setupMsgServerWithOneGameForPlayMoveWithMock(t)
 	escrow.ExpectAny(context)
 	return server, k, context
 }
 
 func setupMsgServerWithOneGameForPlayMoveWithMock(t testing.TB) (types.MsgServer, keeper.Keeper, context.Context,
-	*gomock.Controller, *testutil.MockBankEscrowKeeper) {
+	*gomock.Controller, *testutil.MockBankEscrowKeeper, *testutil.MockCheckersLeaderboardKeeper) {
 	//k, ctx := keepertest.CheckersKeeper(t)
 	ctrl := gomock.NewController(t)
 	bankMock := testutil.NewMockBankEscrowKeeper(ctrl)
-	k, ctx := keepertest.CheckersKeeperWithMocks(t, bankMock)
+	leaderboardMock := testutil.NewMockCheckersLeaderboardKeeper(ctrl)
+	k, ctx := keepertest.CheckersKeeperWithMocks(t, bankMock, leaderboardMock)
 
 	checkers.InitGenesis(ctx, *k, *types.DefaultGenesis())
 	server := keeper.NewMsgServerImpl(*k)
@@ -36,8 +37,9 @@ func setupMsgServerWithOneGameForPlayMoveWithMock(t testing.TB) (types.MsgServer
 		Black:   bob,
 		Red:     carol,
 		Wager:   45,
+		Denom:   "stake",
 	})
-	return server, *k, context, ctrl, bankMock
+	return server, *k, context, ctrl, bankMock, leaderboardMock
 }
 
 func TestPlayMove(t *testing.T) {
@@ -60,7 +62,7 @@ func TestPlayMove(t *testing.T) {
 
 func TestPlayMoveGameNotFound(t *testing.T) {
 	msgServer, _, context := setupMsgServerWithOneGameForPlayMove(t)
-	
+
 	playMoveResponse, err := msgServer.PlayMove(context, &types.MsgPlayMove{
 		Creator:   bob,
 		GameIndex: "2",
@@ -79,6 +81,8 @@ func TestPlayMoveSameBlackRed(t *testing.T) {
 		Creator: alice,
 		Black:   bob,
 		Red:     bob,
+		Wager:   46,
+		Denom:   "coin",
 	})
 	playMoveResponse, err := msgServer.PlayMove(context, &types.MsgPlayMove{
 		Creator:   bob,
@@ -100,7 +104,7 @@ func TestPlayMoveSameBlackRed(t *testing.T) {
 func TestPlayMoveSaveGame(t *testing.T) {
 	msgServer, keeper, context := setupMsgServerWithOneGameForPlayMove(t)
 	ctx := sdk.UnwrapSDKContext(context)
-	
+
 	msgServer.PlayMove(context, &types.MsgPlayMove{
 		Creator:   bob,
 		GameIndex: "1",
@@ -130,7 +134,7 @@ func TestPlayMoveSaveGame(t *testing.T) {
 		MoveCount:   1,
 		BeforeIndex: "-1",
 		AfterIndex:  "-1",
-		Wager:		 45,
+		Wager:       45,
 	}, game1)
 }
 
@@ -162,7 +166,7 @@ func TestPlayMoveCannotParseGame(t *testing.T) {
 func TestPlayMove2Emitted(t *testing.T) {
 	msgServer, _, context := setupMsgServerWithOneGameForPlayMove(t)
 	ctx := sdk.UnwrapSDKContext(context)
-	
+
 	msgServer.PlayMove(context, &types.MsgPlayMove{
 		Creator:   bob,
 		GameIndex: "1",
@@ -198,7 +202,7 @@ func TestPlayMove2Emitted(t *testing.T) {
 func TestPlayMoveEmitted(t *testing.T) {
 	msgServer, _, context := setupMsgServerWithOneGameForPlayMove(t)
 	ctx := sdk.UnwrapSDKContext(context)
-	
+
 	msgServer.PlayMove(context, &types.MsgPlayMove{
 		Creator:   bob,
 		GameIndex: "1",
@@ -246,7 +250,7 @@ func TestSavedPlayedDeadlineIsParseable(t *testing.T) {
 }
 
 func TestPlayMoveCalledBank(t *testing.T) {
-	msgServer, _, context, ctrl, escrow := setupMsgServerWithOneGameForPlayMoveWithMock(t)
+	msgServer, _, context, ctrl, escrow, _ := setupMsgServerWithOneGameForPlayMoveWithMock(t)
 	defer ctrl.Finish()
 	escrow.ExpectPay(context, bob, 45).Times(1)
 	msgServer.PlayMove(context, &types.MsgPlayMove{
@@ -260,7 +264,7 @@ func TestPlayMoveCalledBank(t *testing.T) {
 }
 
 func TestPlayMove2CalledBank(t *testing.T) {
-	msgServer, _, context, ctrl, escrow := setupMsgServerWithOneGameForPlayMoveWithMock(t)
+	msgServer, _, context, ctrl, escrow, _ := setupMsgServerWithOneGameForPlayMoveWithMock(t)
 	defer ctrl.Finish()
 	payBob := escrow.ExpectPay(context, bob, 45).Times(1)
 	escrow.ExpectPay(context, carol, 45).Times(1).After(payBob)
